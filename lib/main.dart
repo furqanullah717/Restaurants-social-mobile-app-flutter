@@ -1,4 +1,8 @@
+import 'package:Restaurant_social_mobile_app/widget/CustomButton.dart';
+import 'package:Restaurant_social_mobile_app/widget/CustomTextField.dart';
 import 'package:flutter/material.dart';
+
+import 'widget/LoginToggleText.dart';
 
 void main() {
   runApp(MyApp());
@@ -11,7 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.orange,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: MyHomePage(title: 'Flutter Demo Home Page'),
@@ -28,39 +32,61 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+        title: Text(
+          widget.title,
+          style: TextStyle(color: Colors.white),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      body: Center(
+        child: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage("assets/images/bg_login.jpg"),
+                fit: BoxFit.cover),
+          ),
+          child: Column(
+            children: [
+              Expanded(
+                child: Container(
+                  alignment: Alignment.center,
+                  margin: EdgeInsets.only(top: 10),
+                  child: Wrap(
+                    children: [
+                      Container(
+                        decoration:
+                            BoxDecoration(color: Color.fromARGB(100, 0, 0, 0)),
+                        padding: EdgeInsets.all(10),
+                        margin: EdgeInsets.all(40),
+                        child: Center(
+                          child: Column(
+                            children: [
+                              CustomTextField("Username",
+                                  TextInputType.emailAddress, false),
+                              CustomTextField("Password",
+                                  TextInputType.visiblePassword, true),
+                              CustomButton(),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              ToggleLogin("Don't Have account?", "Register",()=>{
+                                print("Toggle clicked")
+                              }),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
