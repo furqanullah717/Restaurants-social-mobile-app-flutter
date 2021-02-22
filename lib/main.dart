@@ -1,3 +1,5 @@
+import 'package:Restaurant_social_mobile_app/views/LoginView.dart';
+import 'package:Restaurant_social_mobile_app/views/SignUpView.dart';
 import 'package:Restaurant_social_mobile_app/widget/CustomButton.dart';
 import 'package:Restaurant_social_mobile_app/widget/CustomTextField.dart';
 import 'package:flutter/material.dart';
@@ -28,10 +30,28 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _MyHomePageState createState() => _MyHomePageState(true);
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  bool isLogin = false;
+
+  _MyHomePageState(this.isLogin);
+
+  getView(bool isLogin) {
+    if (isLogin) {
+      return LoginView(onToggleClick);
+    } else {
+      return SignUpView(onToggleClick);
+    }
+  }
+
+  onToggleClick(bool data) {
+    setState(() {
+      this.isLogin = data;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,29 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   margin: EdgeInsets.only(top: 10),
                   child: Wrap(
                     children: [
-                      Container(
-                        decoration:
-                            BoxDecoration(color: Color.fromARGB(100, 0, 0, 0)),
-                        padding: EdgeInsets.all(10),
-                        margin: EdgeInsets.all(40),
-                        child: Center(
-                          child: Column(
-                            children: [
-                              CustomTextField("Username",
-                                  TextInputType.emailAddress, false),
-                              CustomTextField("Password",
-                                  TextInputType.visiblePassword, true),
-                              CustomButton(),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              ToggleLogin("Don't Have account?", "Register",()=>{
-                                print("Toggle clicked")
-                              }),
-                            ],
-                          ),
-                        ),
-                      ),
+                      getView(isLogin),
                     ],
                   ),
                 ),

@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 
 class ToggleLogin extends StatelessWidget {
-  String msg;
-  String button;
-  Function buttonClick;
+  final String msg;
+  final String button;
+  final Function buttonClick;
 
-  ToggleLogin(String msg, String button, Function buttonClick) {
-    this.msg = msg;
-    this.button = button;
-    this.buttonClick = buttonClick;
-  }
+  ToggleLogin(this.msg, this.button, this.buttonClick);
 
   @override
   Widget build(BuildContext context) {
