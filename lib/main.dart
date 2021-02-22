@@ -1,10 +1,6 @@
 import 'package:Restaurant_social_mobile_app/views/LoginView.dart';
 import 'package:Restaurant_social_mobile_app/views/SignUpView.dart';
-import 'package:Restaurant_social_mobile_app/widget/CustomButton.dart';
-import 'package:Restaurant_social_mobile_app/widget/CustomTextField.dart';
 import 'package:flutter/material.dart';
-
-import 'widget/LoginToggleText.dart';
 
 void main() {
   runApp(MyApp());
@@ -15,12 +11,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Restaurant Social',
       theme: ThemeData(
         primarySwatch: Colors.orange,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Restaurant Social'),
     );
   }
 }
