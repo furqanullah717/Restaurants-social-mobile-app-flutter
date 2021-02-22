@@ -1,86 +1,74 @@
-import 'package:Restaurant_social_mobile_app/views/LoginView.dart';
-import 'package:Restaurant_social_mobile_app/views/SignUpView.dart';
+import 'package:Restaurant_social_mobile_app/feature/authentication/AuthScreen.dart';
+import 'package:Restaurant_social_mobile_app/feature/error/SomethingWentWrong.dart';
+import 'package:Restaurant_social_mobile_app/feature/home/Home.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
+import 'data/remote/FirebaseManager.dart';
+import 'feature/loader/Loading.dart';
+
 void main() {
-  runApp(MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(App());
 }
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class App extends StatefulWidget {
+  _AppState createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  // Set default `_initialized` and `_error` state to false
+  bool _initialized = false;
+  bool _error = false;
+
+  // Define an async function to initialize FlutterFire
+  void initializeFlutterFire() async {
+    try {
+      // Wait for Firebase to initialize and set `_initialized` state to true
+      await Firebase.initializeApp();
+      setState(() {
+        _initialized = true;
+      });
+    } catch (e) {
+      // Set `_error` state to true if Firebase initialization fails
+      print(e.toString());
+      setState(() {
+        _error = true;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    initializeFlutterFire();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Restaurant Social',
       theme: ThemeData(
         primarySwatch: Colors.orange,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Restaurant Social'),
+      home: getView(),
     );
   }
-}
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState(true);
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  bool isLogin = false;
-
-  _MyHomePageState(this.isLogin);
-
-  getView(bool isLogin) {
-    if (isLogin) {
-      return LoginView(onToggleClick);
-    } else {
-      return SignUpView(onToggleClick);
+  getView() {
+    if (_error) {
+      return SomeThingWentWrong();
     }
-  }
+    if (!_initialized) {
+      return Loading();
+    }
 
-  onToggleClick(bool data) {
-    setState(() {
-      this.isLogin = data;
-    });
-  }
+    if (FirebaseManger.instance.getCurrentUser() != null) {
+      return HomeScreen();
+    }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          widget.title,
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-      body: Center(
-        child: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage("assets/images/bg_login.jpg"),
-                fit: BoxFit.cover),
-          ),
-          child: Column(
-            children: [
-              Expanded(
-                child: Container(
-                  alignment: Alignment.center,
-                  margin: EdgeInsets.only(top: 10),
-                  child: Wrap(
-                    children: [
-                      getView(isLogin),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+    return AuthScreen(
+      title: "Authentication",
     );
   }
 }

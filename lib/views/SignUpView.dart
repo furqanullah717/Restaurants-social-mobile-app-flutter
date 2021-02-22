@@ -1,14 +1,36 @@
+import 'package:Restaurant_social_mobile_app/feature/authentication/AuthenticationView.dart';
+import 'package:Restaurant_social_mobile_app/repository/LoginRepository.dart';
+import 'package:Restaurant_social_mobile_app/utils/UiUtils.dart';
 import 'package:Restaurant_social_mobile_app/widget/CustomButton.dart';
 import 'package:Restaurant_social_mobile_app/widget/CustomTextField.dart';
 import 'package:Restaurant_social_mobile_app/widget/LoginToggleText.dart';
 import 'package:flutter/material.dart';
 
 class SignUpView extends StatelessWidget {
-  final Function onclick;
+  final AuthenticationView callback;
+  final _form = GlobalKey<FormState>();
 
-  SignUpView(this.onclick);
+  SignUpView(this.callback);
 
-  getClick() {}
+  getClick() async {
+    final isValid = _form.currentState.validate();
+    if (!isValid) {
+      return;
+    }
+    callback.onLoad("Registering...");
+    var res = await LoginRepository()
+        .register(userNameController.text, passwordController.text);
+    if (res.failed) {
+      callback.onFailed(res);
+    } else {
+      callback.onSuccess(res);
+    }
+  }
+
+  final TextEditingController userNameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -20,19 +42,39 @@ class SignUpView extends StatelessWidget {
       padding: EdgeInsets.all(10),
       margin: EdgeInsets.all(40),
       child: Center(
-        child: Column(
-          children: [
-            CustomTextField("Username", TextInputType.emailAddress, false),
-            CustomTextField("Password", TextInputType.visiblePassword, true),
-            CustomTextField(
-                "Confirm Password", TextInputType.visiblePassword, true),
-            CustomButton("Sign Up", getClick),
-            SizedBox(
-              height: 10,
-            ),
-            ToggleLogin(
-                "Already Have account? ", "Login", () => {onclick(true)}),
-          ],
+        child: Form(
+          key: _form,
+          child: Column(
+            children: [
+              CustomTextField("Username", TextInputType.emailAddress, false,
+                  userNameController, (text) {
+                if (!UiUtils.isValidEmail(text)) {
+                  return "Enter a valid Email Address!";
+                }
+                return null;
+              }),
+              CustomTextField("Password", TextInputType.visiblePassword, true,
+                  passwordController, (text) {
+                if ((text.length < 5)) {
+                  return "Password must me at least 6 character long";
+                }
+                return null;
+              }),
+              CustomTextField("Confirm Password", TextInputType.visiblePassword,
+                  true, confirmPasswordController, (String text) {
+                if (text.isEmpty || text != passwordController.text) {
+                  return "Password does not match";
+                }
+                return null;
+              }),
+              CustomButton("Sign Up", getClick),
+              SizedBox(
+                height: 10,
+              ),
+              ToggleLogin("Already Have account? ", "Login",
+                  () => {callback.onclick(true)}),
+            ],
+          ),
         ),
       ),
     );

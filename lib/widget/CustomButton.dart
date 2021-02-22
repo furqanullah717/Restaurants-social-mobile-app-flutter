@@ -12,7 +12,7 @@ class CustomButton extends StatelessWidget {
       decoration: BoxDecoration(color: Colors.orange,borderRadius: BorderRadius.circular(15.0),),
       margin: EdgeInsets.only(top: 10),
       child:  FlatButton(
-          onPressed: callBack(),
+          onPressed: callBack,
           child: (Text(
             name,
             style: TextStyle(color: Colors.white),
