@@ -1,4 +1,5 @@
 import 'package:Restaurant_social_mobile_app/data/model/User.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class FirebaseManger {
@@ -18,6 +19,11 @@ class FirebaseManger {
   Future<UserCredential> registerUsingEmail(String email, String passowrd) {
     return FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email, password: passowrd);
+  }
+
+  storeUserProfile(UserResponse data){
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    firestore.collection("users").doc(getCurrentUser().uuid).set(data.toJson());
   }
 
   UserResponse getCurrentUser() {

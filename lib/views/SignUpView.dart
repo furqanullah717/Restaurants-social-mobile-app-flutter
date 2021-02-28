@@ -18,8 +18,8 @@ class SignUpView extends StatelessWidget {
       return;
     }
     callback.onLoad("Registering...");
-    var res = await LoginRepository()
-        .register(userNameController.text, passwordController.text);
+    var res = await LoginRepository().register(
+        userNameController.text, passwordController.text, nameController.text);
     if (res.failed) {
       callback.onFailed(res);
     } else {
@@ -29,6 +29,7 @@ class SignUpView extends StatelessWidget {
 
   final TextEditingController userNameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
 
@@ -46,6 +47,13 @@ class SignUpView extends StatelessWidget {
           key: _form,
           child: Column(
             children: [
+              CustomTextField("Name", TextInputType.name, false, nameController,
+                  (text) {
+                if (text.toString().isEmpty) {
+                  return "Name cannot be blank";
+                }
+                return null;
+              }),
               CustomTextField("Username", TextInputType.emailAddress, false,
                   userNameController, (text) {
                 if (!UiUtils.isValidEmail(text)) {
