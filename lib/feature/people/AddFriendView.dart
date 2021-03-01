@@ -6,14 +6,22 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-class FriendsRequestView extends StatefulWidget {
+class AddFriendView extends StatefulWidget {
+  final List<String> idsToExclude;
+
+  AddFriendView(this.idsToExclude);
+
   @override
   State<StatefulWidget> createState() {
-    return FriendRequestStat();
+    return AddFriendState(idsToExclude);
   }
 }
 
-class FriendRequestStat extends State<FriendsRequestView> {
+class AddFriendState extends State<AddFriendView> {
+  final List<String> idsToExclude;
+
+  AddFriendState(this.idsToExclude);
+
   final TextStyle headStyle = TextStyle(
       color: Colors.deepOrangeAccent,
       fontWeight: FontWeight.bold,
@@ -21,59 +29,51 @@ class FriendRequestStat extends State<FriendsRequestView> {
 
   final TextStyle style = TextStyle(color: Colors.black45, fontSize: 16);
 
-  DocumentReference getReference(String id) {
-    String uuid = FirebaseAuth.instance.currentUser.uid;
+  CollectionReference getReference(UserResponse user) {
     return FirebaseFirestore.instance
         .collection('users')
-        .doc(uuid)
-        .collection("request")
-        .doc(id);
+        .doc(user.uuid)
+        .collection("request");
   }
 
-  addUser(UserResponse user, String uuid) {
-    return FirebaseFirestore.instance
-        .collection('users')
-        .doc(uuid)
-        .collection("friends")
-        .add(user.toJson());
-  }
-
-  void Accept(UserResponse user, String id) {
-    String uuid = FirebaseAuth.instance.currentUser.uid;
+  addFriend(UserResponse user) {
     UiUtils.showLoaderDialog(
-        context, "Please wait while we Accept your request..");
-    addUser(user, uuid).then((value) => {
-          this
-              .addUser(UserResponse.mapFrom(FirebaseAuth.instance.currentUser),
-                  user.uuid)
-              .then((value) => {
-                    getReference(id).delete().then((value) => {updateState()})
-                  })
-        });
+        context, "Please wait while we add your request..");
+    UserResponse userResponse =
+        UserResponse.mapFrom(FirebaseAuth.instance.currentUser);
+    getReference(user)
+        .add(userResponse.toJson())
+        .then((value) => {})
+        .then((value) => {updateState(user)});
   }
 
-  updateState() {
+  updateState(UserResponse user) {
     hideLoader();
-    this.setState(() {});
+    this.setState(() {
+      idsToExclude.add(user.uuid);
+    });
   }
 
   hideLoader() {
     Navigator.pop(context);
   }
 
-  void Reject(UserResponse user, String id) {
-    UiUtils.showLoaderDialog(
-        context, "Please wait while we Rejct your request..");
-    getReference(id).delete().then((value) => {updateState()});
-  }
-
   @override
   Widget build(BuildContext context) {
-    String uuid = FirebaseAuth.instance.currentUser.uid;
-    CollectionReference users = FirebaseFirestore.instance
-        .collection('users')
-        .doc(uuid)
-        .collection("request");
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Add Friends',
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+      body: Center(child: getView()),
+    );
+  }
+
+  getView() {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+
     return StreamBuilder<QuerySnapshot>(
       stream: users.snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -92,10 +92,17 @@ class FriendRequestStat extends State<FriendsRequestView> {
             child: Text("No Data Found"),
           );
         }
+        List<QueryDocumentSnapshot> docs = snapshot.data.docs;
+        if (idsToExclude.isNotEmpty)
+          docs.removeWhere((element) => checkIfContains(element));
+        if (docs.length == 0) {
+          return Container(
+            child: Text("No Data Found"),
+          );
+        }
 
         return new ListView(
-          children: snapshot.data.docs.map((DocumentSnapshot document) {
-            String id = document.id;
+          children: docs.map((DocumentSnapshot document) {
             UserResponse user = UserResponse.mapFromSnapshot(document);
             return new Card(
                 child: Container(
@@ -150,13 +157,8 @@ class FriendRequestStat extends State<FriendsRequestView> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            ListItemButton(() => {Accept(user, id)},
-                                Colors.green, "Accept"),
-                            SizedBox(
-                              height: 5,
-                            ),
                             ListItemButton(
-                                () => {Reject(user, id)}, Colors.red, "Reject"),
+                                () => {addFriend(user)}, Colors.green, "Add"),
                           ],
                         ))
                   ],
@@ -167,5 +169,10 @@ class FriendRequestStat extends State<FriendsRequestView> {
         );
       },
     );
+  }
+
+  bool checkIfContains(element) {
+    String uuid = element.data()["uuid"];
+    return idsToExclude.contains(uuid);
   }
 }

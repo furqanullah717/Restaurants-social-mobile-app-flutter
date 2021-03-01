@@ -11,6 +11,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List<String> idsToExclude = new List();
   int _selectedIndex = 0;
   static List<Widget> _widgetOptions = <Widget>[
     PostView(),

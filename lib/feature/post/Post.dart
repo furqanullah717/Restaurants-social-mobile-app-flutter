@@ -27,11 +27,14 @@ class PostView extends StatelessWidget {
         }
 
         List<String> ids = new List();
+        String id = FirebaseAuth.instance.currentUser.uid;
+        ids.add(id);
         snapshot.data.docs.forEach((element) {
           ids.add(element.data()["uuid"]);
         });
-        CollectionReference users = FirebaseFirestore.instance.collection('posts');
-       users.where('userid', whereIn: ids);
+        CollectionReference users = FirebaseFirestore.instance.collection(
+            'posts');
+        users.where('userid', whereIn: ids);
 
         return new PostData(ids);
       },

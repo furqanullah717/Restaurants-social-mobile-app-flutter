@@ -40,42 +40,6 @@
           ]
         }
       }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:653960483737:android:b552a60e8b1b2b27a13908",
-        "android_client_info": {
-          "package_name": "com.furqan.res.social.mobile.app.Restaurant_social_mobile_app"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "653960483737-oi2767l6pe6f9dfo3a6aejjrldfnio6l.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyABaQrog5sBT2WXRc3gaFNgpPa92np00kU"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "653960483737-oi2767l6pe6f9dfo3a6aejjrldfnio6l.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "653960483737-k0hahtuel9bnc70fbjaevvibojr33h0h.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.furqan.res.social.mobile.app.RestaurantSocialMobileApp"
-              }
-            }
-          ]
-        }
-      }
     }
   ],
   "configuration_version": "1"

@@ -30,7 +30,10 @@ dependencies:
   cloud_firestore: "^0.16.0"
   cupertino_icons: ^1.0.0
   transparent_image: ^1.0.0
-
+  camera:
+  path_provider:
+  path:
+  firebase_storage: ^7.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
