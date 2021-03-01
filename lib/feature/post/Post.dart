@@ -9,7 +9,7 @@ class PostView extends StatelessWidget {
     final CollectionReference reference = FirebaseFirestore.instance
         .collection('users')
         .doc(uuid)
-        .collection("request");
+        .collection("friends");
     return reference.get();
   }
 
