@@ -1,22 +1,15 @@
 import 'package:Restaurant_social_mobile_app/feature/post/PostData.dart';
+import 'package:Restaurant_social_mobile_app/repository/PostRepoository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class PostView extends StatelessWidget {
-  Future<QuerySnapshot> getUserDetails() async {
-    String uuid = FirebaseAuth.instance.currentUser.uid;
-    final CollectionReference reference = FirebaseFirestore.instance
-        .collection('users')
-        .doc(uuid)
-        .collection("friends");
-    return reference.get();
-  }
-
+final PostRepository postRepository = PostRepository();
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<QuerySnapshot>(
-      future: getUserDetails(),
+      future: postRepository.getUserFriendList(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
           return Text('Something went wrong');
@@ -32,11 +25,7 @@ class PostView extends StatelessWidget {
         snapshot.data.docs.forEach((element) {
           ids.add(element.data()["uuid"]);
         });
-        CollectionReference users = FirebaseFirestore.instance.collection(
-            'posts');
-        users.where('userid', whereIn: ids);
-
-        return new PostData(ids);
+        return new PostData(ids,postRepository);
       },
     );
   }

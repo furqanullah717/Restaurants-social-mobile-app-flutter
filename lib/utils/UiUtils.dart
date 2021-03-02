@@ -8,6 +8,7 @@ class UiUtils {
         child: new Column(
           children: [
             CircularProgressIndicator(),
+            SizedBox(height: 10,) ,
             Container(
               margin: EdgeInsets.only(left: 7),
               child: Expanded(
@@ -54,5 +55,15 @@ class UiUtils {
         );
       },
     );
+  }
+
+  static Widget getErrorWidget(String msg) {
+    return Container(
+      child: Text(msg),
+    );
+  }
+
+ static hideLoader(BuildContext context) {
+    Navigator.pop(context);
   }
 }

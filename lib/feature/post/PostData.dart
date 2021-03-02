@@ -1,31 +1,34 @@
 import 'package:Restaurant_social_mobile_app/data/model/PostModel.dart';
 import 'package:Restaurant_social_mobile_app/feature/post/PostCard.dart';
 import 'package:Restaurant_social_mobile_app/feature/post/addPost/AddPost.dart';
+import 'package:Restaurant_social_mobile_app/repository/PostRepoository.dart';
+import 'package:Restaurant_social_mobile_app/utils/UiUtils.dart';
+import 'package:Restaurant_social_mobile_app/utils/Utils.dart';
 import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class PostData extends StatefulWidget {
   final List<String> ids;
+  final PostRepository postRepository;
 
-  PostData(this.ids);
+  PostData(this.ids, this.postRepository);
 
   @override
-  _PostDataState createState() => _PostDataState(ids);
+  _PostDataState createState() => _PostDataState(ids, postRepository);
 }
 
 class _PostDataState extends State<PostData> {
   final List<String> ids;
+  final PostRepository postRepository;
 
-  _PostDataState(this.ids);
+  _PostDataState(this.ids, this.postRepository);
 
   @override
   Widget build(BuildContext context) {
-    CollectionReference users = FirebaseFirestore.instance.collection('posts');
-    if (ids.isNotEmpty) users.where('userid', whereIn: ids);
     return Scaffold(
       body: FutureBuilder(
-          future: users.get(),
+          future: postRepository.getListOfFriendsPost(ids),
           builder:
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.hasError) {
@@ -39,11 +42,7 @@ class _PostDataState extends State<PostData> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           WidgetsFlutterBinding.ensureInitialized();
-
-// Obtain a list of the available cameras on the device.
           final cameras = await availableCameras();
-
-// Get a specific camera from the list of available cameras.
           final firstCamera = cameras.first;
           Navigator.push(
               context,
@@ -72,12 +71,8 @@ class _PostDataState extends State<PostData> {
   }
 
   getView(AsyncSnapshot<QuerySnapshot> snapshot) {
-    if (snapshot.data == null ||
-        snapshot.data.docs == null ||
-        snapshot.data.docs.length == 0) {
-      return Center(
-        child: Text("No Data Found"),
-      );
+    if (Utils.isNullOrEmpty(snapshot)) {
+      return UiUtils.getErrorWidget("No data found");
     }
     return ListView(
         children: snapshot.data.docs.map((DocumentSnapshot document) {

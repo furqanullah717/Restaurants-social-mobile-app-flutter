@@ -17,9 +17,6 @@ class _AuthScreenState extends State<AuthScreen> implements AuthenticationView {
   bool isLogin = false;
   final String title;
   _AuthScreenState(this.isLogin, this.title);
-  hideLoader() {
-    Navigator.pop(context);
-  }
 
   getView(bool isLogin) {
     if (isLogin) {
@@ -67,7 +64,7 @@ class _AuthScreenState extends State<AuthScreen> implements AuthenticationView {
 
   @override
   onFailed(UserResponse response) {
-    hideLoader();
+    UiUtils.hideLoader(context);
     UiUtils.showAlert("Error", response.error, context);
   }
 
@@ -78,7 +75,7 @@ class _AuthScreenState extends State<AuthScreen> implements AuthenticationView {
 
   @override
   onSuccess(UserResponse response) {
-    hideLoader();
+    UiUtils.hideLoader(context);
     goToHome();
   }
 
