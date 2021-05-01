@@ -34,11 +34,15 @@ class PostCard extends StatelessWidget {
                       ),
                     ),
                     Center(
-                      child: Expanded(
-                        child: FadeInImage.memoryNetwork(
-                            placeholder: kTransparentImage,
-                            image: data.image,
-                            fit: BoxFit.fitWidth),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: FadeInImage.memoryNetwork(
+                                placeholder: kTransparentImage,
+                                image: data.image,
+                                fit: BoxFit.fitWidth),
+                          ),
+                        ],
                       ),
                     ),
                   ],

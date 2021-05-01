@@ -80,7 +80,7 @@ class FriendsViewState extends State<FriendsView> {
     value.docs.forEach((element) {
       idsToExclude.add(element.data()["uuid"]);
     });
-    friendsRepository.getRequestOfUser(uuid).get().then((data) => {
+    friendsRepository.getRequestOfUser(uuid).then((data) => {
           data.docs.forEach((element) {
             idsToExclude.add(element.data()["uuid"]);
           })

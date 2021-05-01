@@ -3,7 +3,9 @@ import 'package:transparent_image/transparent_image.dart';
 
 class ImageView extends StatelessWidget {
   final String url;
+
   ImageView(this.url);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -14,13 +16,16 @@ class ImageView extends StatelessWidget {
       child: Stack(
         children: <Widget>[
           Center(
-            child: Expanded(
-              child: FadeInImage.memoryNetwork(
-                  placeholder: kTransparentImage,
-                  image: url,
-                  fit: BoxFit.fitWidth),
-            ),
-          ),
+              child: Row(
+            children: [
+              Expanded(
+                child: FadeInImage.memoryNetwork(
+                    placeholder: kTransparentImage,
+                    image: url,
+                    fit: BoxFit.fitWidth),
+              ),
+            ],
+          )),
         ],
       ),
     );

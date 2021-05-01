@@ -14,6 +14,6 @@ class PostRepository {
   getListOfFriendsPost(List<String> ids) {
     CollectionReference users = FirebaseFirestore.instance.collection('posts');
     users.where('userid', whereIn: ids);
-    return users;
+    return users.get();
   }
 }

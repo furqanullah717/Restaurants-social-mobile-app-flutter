@@ -1,6 +1,7 @@
 import 'package:Restaurant_social_mobile_app/feature/authentication/AuthScreen.dart';
 import 'package:Restaurant_social_mobile_app/feature/friends/FriendsRequestView.dart';
 import 'package:Restaurant_social_mobile_app/feature/friends/FriendsView.dart';
+import 'package:Restaurant_social_mobile_app/feature/map/MapScreen.dart';
 import 'package:Restaurant_social_mobile_app/feature/post/Post.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
   static List<Widget> _widgetOptions = <Widget>[
     PostView(),
     FriendsView("friends"),
-    FriendsRequestView(),
+    MapScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -32,12 +33,15 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text(
           'Home',
           style: TextStyle(color: Colors.white),
+          textAlign: TextAlign.center,
+
         ),
         actions: [
+          FlatButton(onPressed: () => {}, child: Icon(Icons.supervised_user_circle_rounded)),
           FlatButton(
               onPressed: () =>
                   {FirebaseAuth.instance.signOut(), goToLoginScreen()},
-              child: Text("Logout"))
+              child: Icon(Icons.logout)),
         ],
       ),
       body: Center(
@@ -54,8 +58,8 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Friends',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.email),
-            label: 'Friend Request',
+            icon: Icon(Icons.map),
+            label: 'Map',
           ),
         ],
         currentIndex: _selectedIndex,
